@@ -115,6 +115,28 @@ const Landing = () => {
                 {t("landing.hero.title2")}
               </span>
             </h1>
+            <div
+              className="mb-8"
+            >
+              <div className="flex flex-col items-center gap-2 md:gap-3">
+                <p className="text-2xl md:text-3xl lg:text-4xl font-semibold">
+                  <span 
+                    className="inline-block opacity-0 animate-slide-in-left bg-gradient-to-r from-[#1e40af] via-[#2563eb] to-[#0ea5e9] bg-clip-text text-transparent pb-2" 
+                    style={{ animationDelay: "0.5s", animationFillMode: "forwards" }}
+                  >
+                    Evolving people,
+                  </span>
+                </p>
+                <p className="text-2xl md:text-3xl lg:text-4xl font-semibold">
+                  <span 
+                    className="inline-block opacity-0 animate-slide-in-right bg-gradient-to-r from-[#1e40af] via-[#2563eb] to-[#0ea5e9] bg-clip-text text-transparent pb-2" 
+                    style={{ animationDelay: "0.7s", animationFillMode: "forwards" }}
+                  >
+                    Elevating organization
+                  </span>
+                </p>
+              </div>
+            </div>
             <p
               className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-12 leading-relaxed animate-fade-in-up"
               style={{ animationDelay: "0.4s" }}
