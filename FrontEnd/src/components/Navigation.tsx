@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
-
+import { Menu, X, Languages } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import logo from '../assets/logo.svg';
 const Navigation = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -12,6 +14,13 @@ const Navigation = () => {
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+  };
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'ar' : 'en';
+    i18n.changeLanguage(newLang);
+    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLang;
   };
 
   const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => {
@@ -42,8 +51,9 @@ const Navigation = () => {
         <Link 
           to="/" 
           onClick={closeMenu}
-          className="text-2xl font-bold text-[#1e40af] hover:scale-105 transition-transform duration-300"
+          className="text-2xl font-bold text-[#1e40af] hover:scale-105 transition-transform duration-300 flex "
         >
+          <img src={logo} alt="Evolvia HR Logo" className="w-10 h-10 me-2" />
           <span className="bg-gradient-to-br from-[#1e40af] to-[#2563eb] bg-clip-text text-transparent">
             Evolvia HR
           </span>
@@ -52,13 +62,23 @@ const Navigation = () => {
         {/* Desktop Menu */}
         <ul className="hidden md:flex list-none gap-8 items-center">
           <li>
-            <NavLink to="/">Home</NavLink>
+            <NavLink to="/">{t('nav.home')}</NavLink>
           </li>
           <li>
-            <NavLink to="/about">About Us</NavLink>
+            <NavLink to="/about">{t('nav.about')}</NavLink>
           </li>
           <li>
-            <NavLink to="/contact">Contact</NavLink>
+            <NavLink to="/contact">{t('nav.contact')}</NavLink>
+          </li>
+          <li>
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-[#1e40af] hover:bg-blue-50 transition-colors duration-300 font-medium"
+              aria-label="Toggle language"
+            >
+              <Languages size={20} strokeWidth={2} />
+              <span>{i18n.language === 'en' ? 'AR' : 'EN'}</span>
+            </button>
           </li>
         </ul>
 
@@ -85,13 +105,26 @@ const Navigation = () => {
       >
         <ul className="flex flex-col list-none gap-0 px-6 py-4 bg-white/95 backdrop-blur-md border-t border-blue-100 mt-2">
           <li className="border-b border-blue-50 last:border-b-0 mb-4">
-            <NavLink to="/">Home</NavLink>
+            <NavLink to="/">{t('nav.home')}</NavLink>
           </li>
           <li className="border-b border-blue-50 last:border-b-0 mb-4">
-            <NavLink to="/about">About Us</NavLink>
+            <NavLink to="/about">{t('nav.about')}</NavLink>
           </li>
           <li className="border-b border-blue-50 last:border-b-0 mb-4">
-            <NavLink to="/contact">Contact</NavLink>
+            <NavLink to="/contact">{t('nav.contact')}</NavLink>
+          </li>
+          <li className="border-b border-blue-50 last:border-b-0 mb-4">
+            <button
+              onClick={() => {
+                toggleLanguage();
+                closeMenu();
+              }}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-[#1e40af] hover:bg-blue-50 transition-colors duration-300 font-medium w-full"
+              aria-label="Toggle language"
+            >
+              <Languages size={20} strokeWidth={2} />
+              <span>{i18n.language === 'en' ? 'AR' : 'EN'}</span>
+            </button>
           </li>
         </ul>
       </div>

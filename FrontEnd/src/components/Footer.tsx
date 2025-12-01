@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Linkedin, Facebook, Twitter, Instagram } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+  const { t } = useTranslation();
   return (
     <footer className="bg-gradient-to-br from-[#1e293b] to-[#1e3a8a] text-white py-16 px-6 mt-auto">
       <div className="max-w-7xl mx-auto">
@@ -11,40 +13,40 @@ const Footer = () => {
               Evolvia HR
             </h3>
             <p className="text-white/80 leading-relaxed">
-              Your trusted partner for HR consulting and services
+              {t('footer.description')}
             </p>
           </div>
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-[#60a5fa]">Quick Links</h4>
+            <h4 className="text-lg font-semibold mb-4 text-[#60a5fa]">{t('footer.quickLinks')}</h4>
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-white/80 hover:text-[#60a5fa] transition-colors duration-300 hover:translate-x-1 inline-block">
-                  Home
+                  {t('nav.home')}
                 </Link>
               </li>
               <li>
                 <Link to="/about" className="text-white/80 hover:text-[#60a5fa] transition-colors duration-300 hover:translate-x-1 inline-block">
-                  About Us
+                  {t('nav.about')}
                 </Link>
               </li>
               <li>
                 <Link to="/contact" className="text-white/80 hover:text-[#60a5fa] transition-colors duration-300 hover:translate-x-1 inline-block">
-                  Contact
+                  {t('nav.contact')}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-[#60a5fa]">Services</h4>
+            <h4 className="text-lg font-semibold mb-4 text-[#60a5fa]">{t('footer.services')}</h4>
             <ul className="space-y-2 text-white/80">
-              <li>HR Consulting</li>
-              <li>Talent Acquisition</li>
-              <li>Training & Development</li>
-              <li>HR Strategy</li>
+              <li>{t('landing.features.consulting.title')}</li>
+              <li>{t('landing.features.talentAcquisition.title')}</li>
+              <li>{t('landing.features.training.title')}</li>
+              <li>{t('landing.features.hrStrategy.title')}</li>
             </ul>
           </div>
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-[#60a5fa]">Connect With Us</h4>
+            <h4 className="text-lg font-semibold mb-4 text-[#60a5fa]">{t('footer.connectWithUs')}</h4>
             <div className="flex gap-4 mt-4">
               <a 
                 href="https://linkedin.com" 
@@ -86,7 +88,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-white/10 pt-8 text-center text-white/60">
-          <p>&copy; 2024 Evolvia HR. All rights reserved.</p>
+          <p>{t('footer.copyright')}</p>
         </div>
       </div>
     </footer>
