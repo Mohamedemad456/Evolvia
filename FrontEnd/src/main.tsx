@@ -19,7 +19,7 @@ import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter basename="/Evolvia">
+    <BrowserRouter>
       <App />
     </BrowserRouter>
   </StrictMode>,
