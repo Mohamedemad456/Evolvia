@@ -1,168 +1,148 @@
-import { useState } from 'react';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { Mail, Phone, MapPin, ArrowUpRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import PageHero from '../components/PageHero';
+import Reveal from '../components/motion/Reveal';
+import FormStatus, { type Status } from '../components/FormStatus';
+import { sendForm } from '../lib/sendForm';
+
+const EMAIL = 'info@evolvia-hr.com';
+// Egyptian mobiles: +20, then the number without its leading 0
+const PHONES = [
+  { display: '+20 121 110 1625', tel: '+201211101625' },
+  { display: '+20 104 000 0178', tel: '+201040000178' },
+];
+
+const inputClass =
+  'w-full rounded-xl border border-ink/10 bg-mist px-4 py-3.5 text-base text-ink placeholder:text-ink/40 transition focus:border-brand focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand/15 disabled:opacity-60';
 
 const Contact = () => {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  });
+  const [status, setStatus] = useState<Status>('idle');
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
 
-  const contactInfo = {
-    email: "info@evolvia-hr.com",
-    phone: ["01211101625","01040000178"]
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (status === 'success' || status === 'error') setStatus('idle');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert(t('contact.form.successMessage'));
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    setStatus('sending');
+    try {
+      await sendForm({
+        name: formData.name,
+        email: formData.email,
+        subject: `[Website contact] ${formData.name}`,
+        message: formData.phone ? `Phone: ${formData.phone}\n\n${formData.message}` : formData.message,
+      });
+      setStatus('success');
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch {
+      setStatus('error');
+    }
   };
+
+  const address = t('contact.addressHolder');
+  const channels = [
+    { icon: Mail, label: t('contact.email'), lines: [{ text: EMAIL, href: `mailto:${EMAIL}` }] },
+    { icon: Phone, label: t('contact.phone'), lines: PHONES.map((p) => ({ text: p.display, href: `tel:${p.tel}` })) },
+    {
+      icon: MapPin,
+      label: t('contact.address'),
+      lines: [{ text: address, href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, external: true }],
+    },
+  ];
+
+  const sending = status === 'sending';
 
   return (
-    <div className="min-h-[calc(100vh-200px)] bg-gradient-to-b from-white to-sky-50">
-      {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-[#1e40af] to-[#2563eb] text-white py-16 px-6 text-center overflow-hidden">
-        <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-radial-gradient from-white/10 to-transparent animate-rotate" style={{ animationDuration: '25s', animationDirection: 'reverse' }}></div>
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 relative z-10 animate-fade-in-up">
-          {t('contact.title')}
-        </h1>
-        <p className="text-lg md:text-xl max-w-3xl mx-auto opacity-95 leading-relaxed relative z-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-          {t('contact.subtitle')}
-        </p>
-      </div>
+    <div className="bg-white">
+      <PageHero eyebrow={t('contact.eyebrow')} title={t('contact.title')} subtitle={t('contact.subtitle')} />
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          {/* Contact Info */}
-          <div className="animate-fade-in-up">
-            <h2 className="text-3xl font-bold text-[#1e40af] mb-6">{t('contact.letsWorkTogether')}</h2>
-            <p className="text-slate-700 leading-relaxed mb-12 text-lg">
-              {t('contact.description')}
-            </p>
-            
-            <div className="space-y-6">
-              <div className="flex gap-4 items-start p-6 bg-white rounded-xl shadow-md shadow-blue-900/10 transition-all duration-300 hover:translate-x-1 hover:shadow-lg hover:shadow-blue-900/20">
-                <div className="w-12 h-12 rounded-full border-2 border-[#1e40af] flex items-center justify-center text-[#1e40af] flex-shrink-0">
-                  <Mail size={24} strokeWidth={2} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[#1e40af] mb-2">{t('contact.email')}</h3>
-                  <p className="text-slate-700">{contactInfo.email}</p>
-                </div>
-              </div>
-              <div className="flex gap-4 items-start p-6 bg-white rounded-xl shadow-md shadow-blue-900/10 transition-all duration-300 hover:translate-x-1 hover:shadow-lg hover:shadow-blue-900/20">
-                <div className="w-12 h-12 rounded-full border-2 border-[#1e40af] flex items-center justify-center text-[#1e40af] flex-shrink-0">
-                  <Phone size={24} strokeWidth={2} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[#1e40af] mb-2">{t('contact.phone')}</h3>
-                  <p className="text-slate-700">+02 {contactInfo.phone[0]}</p>
-                  <p className="text-slate-700">+02 {contactInfo.phone[1]}</p>
-                </div>
-              </div>
-              <div className="flex gap-4 items-start p-6 bg-white rounded-xl shadow-md shadow-blue-900/10 transition-all duration-300 hover:translate-x-1 hover:shadow-lg hover:shadow-blue-900/20">
-                <div className="w-12 h-12 rounded-full border-2 border-[#1e40af] flex items-center justify-center text-[#1e40af] flex-shrink-0">
-                  <MapPin size={24} strokeWidth={2} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-[#1e40af] mb-2">{t('contact.address')}</h3>
-                  <p className="text-slate-700">
-                  {t('contact.addressHolder')}
-                  </p>
-                </div>
-              </div>
-            </div>
+      <section className="relative py-20 sm:py-28">
+        <div className="mx-auto grid max-w-7xl items-start gap-12 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+          {/* Info */}
+          <div>
+            <Reveal>
+              <h2 className="font-display text-4xl font-bold text-ink sm:text-5xl">{t('contact.letsWorkTogether')}</h2>
+              <p className="mt-5 text-lg leading-relaxed text-ink/60">{t('contact.description')}</p>
+            </Reveal>
+
+            <ul className="mt-10 space-y-4">
+              {channels.map(({ icon: Icon, label, lines }, i) => (
+                <Reveal as="li" key={label} delay={i * 90} className="flex gap-5 rounded-3xl border border-ink/[0.07] bg-mist/60 p-6">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-ink text-white">
+                    <Icon size={22} />
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-semibold uppercase tracking-wider text-ink/45 rtl:tracking-normal">{label}</h3>
+                    {lines.map((line) => (
+                      <a
+                        key={line.text}
+                        href={line.href}
+                        {...('external' in line ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                        className="group mt-1.5 flex items-center gap-1.5 break-words font-display text-lg font-semibold text-ink transition-colors hover:text-brand"
+                        dir={Icon === Phone ? 'ltr' : undefined}
+                      >
+                        <span className={Icon === Phone ? 'rtl:text-end' : ''}>{line.text}</span>
+                        <ArrowUpRight size={16} className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
+                      </a>
+                    ))}
+                  </div>
+                </Reveal>
+              ))}
+            </ul>
           </div>
 
-          {/* Contact Form */}
-          <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <form className="bg-white p-8 rounded-2xl shadow-lg shadow-blue-900/10" onSubmit={handleSubmit}>
-              <div className="mb-6">
-                <label htmlFor="name" className="block mb-2 text-[#1e40af] font-semibold text-sm">
-                  {t('contact.form.name')} *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  placeholder={t('contact.form.namePlaceholder')}
-                  className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base font-sans transition-all duration-300 bg-white text-slate-900 focus:outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-blue-100"
-                />
+          {/* Form */}
+          <Reveal delay={150}>
+            <form
+              onSubmit={handleSubmit}
+              className="rounded-[2rem] border border-ink/[0.07] bg-white p-6 shadow-[0_40px_80px_-40px_rgba(11,20,36,0.3)] sm:p-10"
+            >
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <label htmlFor="name" className="mb-2 block text-sm font-semibold text-ink">
+                    {t('contact.form.name')} <span className="text-brand">*</span>
+                  </label>
+                  <input type="text" id="name" name="name" autoComplete="name" value={formData.name} onChange={handleChange} required disabled={sending} placeholder={t('contact.form.namePlaceholder')} className={inputClass} />
+                </div>
+                <div>
+                  <label htmlFor="email" className="mb-2 block text-sm font-semibold text-ink">
+                    {t('contact.form.email')} <span className="text-brand">*</span>
+                  </label>
+                  <input type="email" id="email" name="email" autoComplete="email" value={formData.email} onChange={handleChange} required disabled={sending} placeholder={t('contact.form.emailPlaceholder')} className={inputClass} />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="mb-2 block text-sm font-semibold text-ink">
+                    {t('contact.form.phone')}
+                  </label>
+                  <input type="tel" id="phone" name="phone" autoComplete="tel" dir="ltr" value={formData.phone} onChange={handleChange} disabled={sending} placeholder={t('contact.form.phonePlaceholder')} className={`${inputClass} rtl:text-end`} />
+                </div>
+                <div className="sm:col-span-2">
+                  <label htmlFor="message" className="mb-2 block text-sm font-semibold text-ink">
+                    {t('contact.form.message')} <span className="text-brand">*</span>
+                  </label>
+                  <textarea id="message" name="message" value={formData.message} onChange={handleChange} required disabled={sending} rows={6} placeholder={t('contact.form.messagePlaceholder')} className={`${inputClass} min-h-[140px] resize-y`} />
+                </div>
               </div>
-              
-              <div className="mb-6">
-                <label htmlFor="email" className="block mb-2 text-[#1e40af] font-semibold text-sm">
-                  {t('contact.form.email')} *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  placeholder={t('contact.form.emailPlaceholder')}
-                  className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base font-sans transition-all duration-300 bg-white text-slate-900 focus:outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-blue-100"
-                />
-              </div>
-              
-              <div className="mb-6">
-                <label htmlFor="phone" className="block mb-2 text-[#1e40af] font-semibold text-sm">
-                  {t('contact.form.phone')}
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder={t('contact.form.phonePlaceholder')}
-                  className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base font-sans transition-all duration-300 bg-white text-slate-900 focus:outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-blue-100"
-                />
-              </div>
-              
-              <div className="mb-6">
-                <label htmlFor="message" className="block mb-2 text-[#1e40af] font-semibold text-sm">
-                  {t('contact.form.message')} *
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={6}
-                  placeholder={t('contact.form.messagePlaceholder')}
-                  className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base font-sans transition-all duration-300 bg-white text-slate-900 focus:outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-blue-100 resize-y min-h-[120px]"
-                ></textarea>
-              </div>
-              
-              <button type="submit" className="btn btn-primary w-full py-4 text-lg mt-4">
-                {t('contact.form.sendMessage')}
+
+              {(status === 'success' || status === 'error') && (
+                <div className="mt-5">
+                  <FormStatus status={status} errorText={status === 'error' ? t('contact.form.error') : undefined} />
+                </div>
+              )}
+
+              <button type="submit" className="btn btn-primary mt-6 w-full !py-4 text-lg" disabled={sending}>
+                {sending ? t('forms.sending') : t('contact.form.sendMessage')}
               </button>
             </form>
-          </div>
+          </Reveal>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
 
 export default Contact;
-

@@ -1,134 +1,142 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Languages } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link, NavLink as RouterNavLink, useLocation } from 'react-router-dom';
+import { Menu, X, Languages, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import logo from '../assets/logo.svg';
+
+const links = [
+  { to: '/', key: 'nav.home' },
+  { to: '/about', key: 'nav.about' },
+  { to: '/contact', key: 'nav.contact' },
+];
+
 const Navigation = () => {
   const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  const closeMenu = () => {
-    setIsMenuOpen(false);
-  };
+  // close the mobile menu whenever the page changes
+  useEffect(() => setIsMenuOpen(false), [location.pathname]);
 
   const toggleLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'ar' : 'en';
-    i18n.changeLanguage(newLang);
-    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = newLang;
+    i18n.changeLanguage(i18n.language === 'en' ? 'ar' : 'en');
   };
 
-  const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => {
-    const isActive = location.pathname === to;
-    return (
-      <Link 
-        to={to} 
-        onClick={closeMenu}
-        className={`font-medium px-4 py-2 relative transition-colors duration-300 group ${
-          isActive 
-            ? 'text-[#1e40af]' 
-            : 'text-slate-900 hover:text-[#1e40af]'
-        }`}
-      >
-        {children}
-        <span 
-          className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 bg-gradient-to-r from-[#1e40af] to-[#2563eb] transition-all duration-300 ${
-            isActive ? 'w-4/5' : 'w-0 group-hover:w-4/5'
-          }`}
-        ></span>
-      </Link>
-    );
-  };
+  // Every page starts with a dark hero, so the bar is light-on-dark until you scroll.
+  const solid = scrolled && !isMenuOpen;
+  const dark = !solid;
 
   return (
-    <nav className="bg-white/95 backdrop-blur-md shadow-lg shadow-blue-900/10 sticky top-0 z-50 py-4 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <Link 
-          to="/" 
-          onClick={closeMenu}
-          className="text-2xl font-bold text-[#1e40af] hover:scale-105 transition-transform duration-300 flex "
-        >
-          <img src={logo} alt="Evolvia HR Logo" className="w-10 h-10 me-2" />
-          <span className="bg-gradient-to-br from-[#1e40af] to-[#2563eb] bg-clip-text text-transparent">
-            Evolvia HR
-          </span>
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        isMenuOpen
+          ? 'bg-ink'
+          : solid
+            ? 'bg-white/80 shadow-[0_1px_0_rgba(11,20,36,0.08),0_10px_30px_-20px_rgba(11,20,36,0.4)] backdrop-blur-xl'
+            : 'bg-transparent'
+      }`}
+    >
+      <nav className={`mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-6 transition-all duration-300 ${solid ? 'h-16' : 'h-20'}`}>
+        <Link to="/" className="flex items-center gap-2.5" aria-label="Evolvia HR — home">
+          <img src={logo} alt="" className="h-9 w-9 rounded-lg" />
+          <span className={`font-display text-xl font-bold ${dark ? 'text-white' : 'text-ink'}`}>Evolvia HR</span>
         </Link>
-        
-        {/* Desktop Menu */}
-        <ul className="hidden md:flex list-none gap-8 items-center">
-          <li>
-            <NavLink to="/">{t('nav.home')}</NavLink>
-          </li>
-          <li>
-            <NavLink to="/about">{t('nav.about')}</NavLink>
-          </li>
-          <li>
-            <NavLink to="/contact">{t('nav.contact')}</NavLink>
-          </li>
-          <li>
-            <button
-              onClick={toggleLanguage}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-[#1e40af] hover:bg-blue-50 transition-colors duration-300 font-medium"
-              aria-label="Toggle language"
-            >
-              <Languages size={20} strokeWidth={2} />
-              <span>{i18n.language === 'en' ? 'AR' : 'EN'}</span>
-            </button>
-          </li>
-        </ul>
 
-        {/* Mobile Menu Button */}
+        {/* Desktop */}
+        <div className="hidden items-center gap-2 md:flex">
+          <ul className={`flex items-center gap-1 rounded-full p-1 ${dark ? 'bg-white/[0.06] ring-1 ring-white/10' : 'bg-ink/[0.04] ring-1 ring-ink/5'}`}>
+            {links.map((l) => (
+              <li key={l.to}>
+                <RouterNavLink
+                  to={l.to}
+                  end
+                  className={({ isActive }) =>
+                    `block rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+                      isActive
+                        ? dark ? 'bg-white text-ink' : 'bg-ink text-white'
+                        : dark ? 'text-white/75 hover:text-white' : 'text-ink/70 hover:text-ink'
+                    }`
+                  }
+                >
+                  {t(l.key)}
+                </RouterNavLink>
+              </li>
+            ))}
+          </ul>
+          <button
+            onClick={toggleLanguage}
+            className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold transition-colors ${dark ? 'text-white/80 hover:text-white' : 'text-ink/70 hover:text-ink'}`}
+            aria-label="Toggle language"
+          >
+            <Languages size={18} />
+            {i18n.language === 'en' ? 'عربي' : 'EN'}
+          </button>
+          <Link to="/contact" className="btn btn-primary !px-5 !py-2.5 text-sm">
+            {t('nav.letsTalk')}
+            <ArrowRight size={16} className="btn-arrow" />
+          </Link>
+        </div>
+
+        {/* Mobile toggle */}
         <button
-          onClick={toggleMenu}
-          className="md:hidden p-2 rounded-lg text-[#1e40af] hover:bg-blue-50 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#1e40af] focus:ring-offset-2"
+          onClick={() => setIsMenuOpen((o) => !o)}
+          className={`rounded-full p-2.5 transition-colors md:hidden ${dark ? 'text-white hover:bg-white/10' : 'text-ink hover:bg-ink/5'}`}
           aria-label="Toggle menu"
           aria-expanded={isMenuOpen}
         >
-          {isMenuOpen ? (
-            <X size={24} strokeWidth={2} />
-          ) : (
-            <Menu size={24} strokeWidth={2} />
-          )}
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-      </div>
+      </nav>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile panel */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        className={`grid overflow-hidden bg-ink transition-[grid-template-rows,opacity] duration-300 ease-out md:hidden ${
+          isMenuOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
         }`}
       >
-        <ul className="flex flex-col list-none gap-0 px-6 py-4 bg-white/95 backdrop-blur-md border-t border-blue-100 mt-2">
-          <li className="border-b border-blue-50 last:border-b-0 mb-4">
-            <NavLink to="/">{t('nav.home')}</NavLink>
-          </li>
-          <li className="border-b border-blue-50 last:border-b-0 mb-4">
-            <NavLink to="/about">{t('nav.about')}</NavLink>
-          </li>
-          <li className="border-b border-blue-50 last:border-b-0 mb-4">
-            <NavLink to="/contact">{t('nav.contact')}</NavLink>
-          </li>
-          <li className="border-b border-blue-50 last:border-b-0 mb-4">
-            <button
-              onClick={() => {
-                toggleLanguage();
-                closeMenu();
-              }}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-[#1e40af] hover:bg-blue-50 transition-colors duration-300 font-medium w-full"
-              aria-label="Toggle language"
-            >
-              <Languages size={20} strokeWidth={2} />
-              <span>{i18n.language === 'en' ? 'AR' : 'EN'}</span>
-            </button>
-          </li>
-        </ul>
+        <div className="min-h-0">
+          <ul className="flex flex-col gap-1 px-5 pb-6 pt-2">
+            {links.map((l) => (
+              <li key={l.to}>
+                <RouterNavLink
+                  to={l.to}
+                  end
+                  className={({ isActive }) =>
+                    `flex items-center justify-between rounded-2xl px-4 py-4 font-display text-2xl font-semibold transition-colors ${
+                      isActive ? 'bg-white/[0.08] text-white' : 'text-white/70 hover:text-white'
+                    }`
+                  }
+                >
+                  {t(l.key)}
+                  <ArrowRight size={20} className="opacity-50 rtl:-scale-x-100" />
+                </RouterNavLink>
+              </li>
+            ))}
+            <li className="mt-3 flex gap-3">
+              <button
+                onClick={toggleLanguage}
+                className="btn btn-ghost flex-1"
+                aria-label="Toggle language"
+              >
+                <Languages size={18} />
+                {i18n.language === 'en' ? 'عربي' : 'English'}
+              </button>
+              <Link to="/contact" className="btn btn-primary flex-1">
+                {t('nav.letsTalk')}
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
-    </nav>
+    </header>
   );
 };
 
