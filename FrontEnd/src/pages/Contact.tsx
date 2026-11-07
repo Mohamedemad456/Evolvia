@@ -9,7 +9,6 @@ import { sendForm } from '../lib/sendForm';
 const EMAIL = 'info@evolvia-hr.com';
 // Egyptian mobiles: +20, then the number without its leading 0
 const PHONES = [
-  { display: '+20 121 110 1625', tel: '+201211101625' },
   { display: '+20 104 000 0178', tel: '+201040000178' },
 ];
 

@@ -9,7 +9,7 @@
     "hero": {
       "title1": "Transform Your HR",
       "title2": "With Expert Consulting",
-      "description": "We provide comprehensive HR services and consulting to help your business thrive. From talent acquisition to strategic HR planning, we've got you covered.",
+      "description": "We provide comprehensive HR services and consulting to help your business thrive. From talent acquisition and organizational design to organizational development and strategic HR planning, we have got you covered.",
       "getStarted": "Get Started",
       "learnMore": "Learn More",
       "eyebrow": "HR consulting · Cairo, Egypt",
@@ -31,7 +31,7 @@
       },
       "consulting": {
         "title": "HR Consulting",
-        "description": "Expert advice on all aspects of human resources"
+        "description": "Expert advice on all aspects of HR, from organizational design to organizational development"
       },
       "eyebrow": "What we do",
       "title": "Everything your people strategy needs",
@@ -72,7 +72,9 @@
       },
       "consulting": {
         "title": "HR Consulting",
-        "description": "Expert guidance on HR policies, procedures, and best practices to optimize your human resource operations.",
+        "description": "Expert guidance on organizational design, organizational development, HR policies and best practices to optimize your human resource operations.",
+        "orgDesign": "Organizational Design",
+        "orgDevelopment": "Organizational Development",
         "policyDevelopment": "Policy Development",
         "compensationBenefits": "Compensation & Benefits",
         "employeeRelations": "Employee Relations"
@@ -200,7 +202,7 @@
       },
       "comprehensiveServices": {
         "title": "Comprehensive Services",
-        "description": "From recruitment to training, we offer a full range of HR services under one roof."
+        "description": "From recruitment and organizational development to training, we offer a full range of HR services under one roof."
       },
       "eyebrow": "The Evolvia difference"
     },
@@ -231,7 +233,7 @@
     "eyebrow": "Get in touch"
   },
   "footer": {
-    "description": "Your trusted partner for HR consulting and services",
+    "description": "Your trusted partner for HR consulting, organizational design and organizational development",
     "quickLinks": "Quick Links",
     "services": "Services",
     "connectWithUs": "Connect With Us",

@@ -51,6 +51,8 @@ const Footer = () => {
             <h4 className="text-sm font-semibold uppercase tracking-wider text-white/40 rtl:tracking-normal">{t('footer.services')}</h4>
             <ul className="mt-5 space-y-3 text-white/60">
               <li>{t('landing.features.consulting.title')}</li>
+              <li>{t('landing.services.consulting.orgDesign')}</li>
+              <li>{t('landing.services.consulting.orgDevelopment')}</li>
               <li>{t('landing.features.talentAcquisition.title')}</li>
               <li>{t('landing.features.training.title')}</li>
               <li>{t('landing.features.hrStrategy.title')}</li>

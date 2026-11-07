@@ -41,7 +41,7 @@ const services = [
   { key: "recruitment", icon: Users, items: ["executiveSearch", "temporaryStaffing", "backgroundVerification"] },
   { key: "strategy", icon: BarChart3, items: ["orgDesign", "workforcePlanning", "performanceManagement"] },
   { key: "learning", icon: GraduationCap, items: ["leadershipTraining", "skillDevelopment", "complianceTraining"] },
-  { key: "consulting", icon: Briefcase, items: ["policyDevelopment", "compensationBenefits", "employeeRelations"] },
+  { key: "consulting", icon: Briefcase, items: ["orgDesign", "orgDevelopment", "policyDevelopment", "compensationBenefits", "employeeRelations"] },
   { key: "changeManagement", icon: TrendingUp, items: ["orgTransformation", "maSupport", "cultureIntegration"] },
   { key: "compliance", icon: ShieldCheck, items: ["hrAudits", "legalCompliance", "riskAssessment"] },
 ];
@@ -92,7 +92,7 @@ const Landing = () => {
     setIsDialogOpen(true);
   };
 
-  const marqueeItems = services.flatMap((s) => s.items.map((i) => t(`landing.services.${s.key}.${i}`)));
+  const marqueeItems = [...new Set(services.flatMap((s) => s.items.map((i) => t(`landing.services.${s.key}.${i}`))))];
 
   return (
     <div className="overflow-x-clip bg-white">

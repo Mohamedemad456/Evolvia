@@ -1,6 +1,7 @@
-// All site forms post to the same Google Apps Script, which emails the team.
-const ENDPOINT =
-  'https://script.google.com/macros/s/AKfycbxN3KJJ8-rvPZfrPMdbAmAHBwaba1UvS2DnAIIGrV6AU2jhdLTgDTqNs_WD3Q4iO0Bn_g/exec';
+// All site forms post to a Google Apps Script web app, which emails the team.
+// Set VITE_FORM_ENDPOINT in .env.local (local) and in Netlify's environment
+// variables (production). Vite bakes it into the build, so redeploy after changing it.
+const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT;
 
 export type FormPayload = {
   name: string;
@@ -11,10 +12,13 @@ export type FormPayload = {
 
 /**
  * Sends the form. Apps Script doesn't allow reading the response cross-origin
- * (hence `no-cors`), so this only throws on a network failure — it can't detect
- * an error inside the script itself.
+ * (hence `no-cors`), so this only throws on a network failure or a missing
+ * endpoint — it can't detect an error inside the script itself.
  */
 export async function sendForm(payload: FormPayload): Promise<void> {
+  if (!ENDPOINT) {
+    throw new Error('VITE_FORM_ENDPOINT is not set');
+  }
   await fetch(ENDPOINT, {
     method: 'POST',
     mode: 'no-cors',
