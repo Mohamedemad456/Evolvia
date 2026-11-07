@@ -142,12 +142,7 @@ This creates an optimized production build in the `dist` directory.
 
 ### Deploy
 
-The `dist` folder can be deployed to any static hosting service:
-- **Vercel** - Recommended for React apps
-- **Netlify** - Easy deployment with continuous integration
-- **GitHub Pages** - Free hosting for static sites
-- **AWS S3** - Scalable cloud hosting
-- **Any static file server**
+The site is deployed on **Netlify**. Every push to `main` triggers a build using the settings in [`netlify.toml`](../netlify.toml) at the repo root (base directory `FrontEnd`, command `npm run build`, publish `dist`). Client-side routes are handled by `public/_redirects`.
 
 ## 🔧 Configuration
 
